@@ -2,6 +2,26 @@
 import threading
 import re
 
+class Channel:
+	""" Channel allows communication/synchronization between threads"""
+	def __init__(self):
+		self.message = ""
+		self.write_mutex = threading.Lock()
+		self.read_mutex = threading.Lock()
+		self.read_mutex.acquire()
+	def write(self, msg):
+		""" Write allows a message to be sent down the channel"""
+		self.write_mutex.acquire()
+		self.message = msg
+		self.read_mutex.release()
+	def read(self):
+		""" read allows a message to be read from the channel """
+		self.read_mutex.acquire()
+		msg = self.message
+		self.message = ""
+		self.write_mutex.release()
+		return msg
+
 class ThreadOverseer:
 	"""A class to watch all necessary threads"""
 	def __init__(self):
@@ -11,8 +31,8 @@ class ThreadOverseer:
 		self.processes[t_name] = t_cls
 		self.processes[t_name].start()
 	def kill_process(self, t_name):
-		"""kill_process kills a process (all should have a stop method)"""
-		self.processes[t_name].stop()
+		"""kill_process kills a process (all should reserve PKILL as a stop keyword)"""
+		self.processes[t_name].chan.write("PKILL")
 	def prune(self):
 		"""prune removes finished threads from the dictionary"""
 		self.processes = {a: b for a, b in self.processes.items() if b.is_alive()}
