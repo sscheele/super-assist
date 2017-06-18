@@ -1,6 +1,7 @@
 """ An improved assistant piggybacking off of Google AVS"""
 import threading
 import re
+from youtube import search_yt
 
 class Channel:
 	""" Channel allows communication/synchronization between threads"""
