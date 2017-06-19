@@ -1,3 +1,5 @@
+""" An assistant to piggyback off Google AVS """
+
 i = 1
 try:
 	while True:

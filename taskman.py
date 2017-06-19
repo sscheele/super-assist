@@ -1,48 +1,5 @@
-""" An improved assistant piggybacking off of Google AVS"""
-import threading
-import re
-
-class Channel:
-	""" Channel allows communication/synchronization between threads"""
-	def __init__(self):
-		self.message = ""
-		self.write_mutex = threading.Lock()
-		self.read_mutex = threading.Lock()
-		self.read_mutex.acquire()
-	def write(self, msg):
-		""" Write allows a message to be sent down the channel"""
-		self.write_mutex.acquire()
-		self.message = msg
-		self.read_mutex.release()
-	def read(self):
-		""" read allows a message to be read from the channel """
-		self.read_mutex.acquire()
-		msg = self.message
-		self.message = ""
-		self.write_mutex.release()
-		return msg
-
-class ThreadOverseer:
-	"""A class to watch all necessary threads"""
-	def __init__(self):
-		self.processes = {}
-	def start_process(self, t_name, t_cls):
-		"""start_process requires a name for the thread and a thread class to run"""
-		self.processes[t_name] = t_cls
-		self.processes[t_name].start()
-	def kill_process(self, t_name):
-		"""kill_process kills a process (all should reserve PKILL as a stop keyword)"""
-		self.processes[t_name].chan.write("PKILL")
-	def prune(self):
-		"""prune removes finished threads from the dictionary"""
-		self.processes = {a: b for a, b in self.processes.items() if b.is_alive()}
-	def send_text(self, t_name, text):
-		"""send_text sends text to a program"""
-		self.processes[t_name].recv(text)
-	def is_running(self, t_name):
-		"""Check if an object with the name is running"""
-		self.prune()
-		return t_name in self.processes
+""" Classes to help with task managment and input handling """
+from thread_classes import ThreadOverseer
 
 class Expression:
 	""" Expression represents a way of phrasing a command - it contains a regex and a
@@ -60,21 +17,31 @@ class InputHandler:
 	def add_starter(self, cls):
 		"""add_starter matches a pattern to a command class"""
 		for tmp in cls.starters:
-			self.starters[tmp] = cls.thread_cls
+			self.starters[tmp] = cls
 		for tmp in cls.command_patterns:
-			self.commands[tmp] = cls.name
+			self.commands[tmp] = cls
 
 	def handle_input(self, text):
 		"""handle_input runs through the list of patterns trying to find a match for text"""
 		for key, val in self.starters:
 			match_data = key.pattern.match(text)
 			if match_data:
-				tmp = val(key.arg_names, match_data.groups())
+				tmp = val.thread_cls(key.arg_names, match_data.groups())
+				self.overseer.start_process(val.name, tmp)
+				return
+		for key, val in self.commands:
+			match_data = key.pattern.match(text)
+			if match_data:
+				if self.overseer.is_blocked(val.name):
+					print("Error: blocked channel")
+					return
+				self.overseer.send_text(val.name, text)
 
 class Task:
-	"""Task associates task names, command phrases, and thread classes"""
-	def __init__(self, n, p, c, t):
+	"""Task associates task names, starter phrases, command phrases, and thread classes
+	phrases should be represented by Expressions"""
+	def __init__(self, n, s, c, t):
 		self.name = n
-		self.pattern = p
+		self.starters = s
 		self.command_patterns = c
 		self.thread_cls = t
