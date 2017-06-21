@@ -2,6 +2,7 @@
 from html.parser import HTMLParser
 from urllib.parse import quote_plus
 from urllib.request import urlopen
+from re import compile
 
 
 class YTParser(HTMLParser):
@@ -21,6 +22,7 @@ class YTParser(HTMLParser):
                 if attr_name == "href" and attr_val.startswith("/watch?v="):
                     self.data = attr_val[9:]
 
+class 
 
 def search_yt(query):
     """ Return the first youtube result for a link """
