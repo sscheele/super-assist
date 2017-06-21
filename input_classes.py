@@ -50,7 +50,7 @@ class InputHandler:
                 print(tmp)
                 match_test = self.text_regex.match(tmp)
                 if match_test:
-                    self.handle_input(match_test.groups(0))
+                    self.handle_input(match_test.group(1))
         except EOFError:
             pass
 
