@@ -1,7 +1,13 @@
-import subprocess
-import sys
-with open('test.log', 'w') as f:
-    process = subprocess.Popen(["../GAssist/env/bin/google-assistant-demo"], stdout=subprocess.PIPE)
-    for line in iter(process.stdout.readline, ''):
-        sys.stdout.write(line)
-        f.write(line)
+import time
+def follow(thefile):
+    thefile.seek(0,2) # Go to the end of the file
+    while True:
+        line = thefile.readline()
+        if not line:
+            time.sleep(0.1) # Sleep briefly
+            continue
+        yield line
+
+with open("test.log", 'r') as f:
+    for line in follow(f):
+        print(line)
