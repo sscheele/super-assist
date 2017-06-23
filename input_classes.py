@@ -48,6 +48,7 @@ class InputHandler:
             while True:
                 tmp = input()
                 print(tmp)
+                tmp = tmp.strip().lower()
                 match_test = self.text_regex.match(tmp)
                 if match_test:
                     self.handle_input(match_test.group(1))

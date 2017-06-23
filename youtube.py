@@ -5,8 +5,10 @@ from urllib.request import urlopen
 from re import compile
 import string
 import random
-from os import system
 import pafy
+import os
+from time import sleep
+from psutil import process_iter
 from input_classes import Task, Expression
 
 def rand_str(N):
@@ -16,34 +18,40 @@ def rand_str(N):
 class YTParser(HTMLParser):
     """ YTParser parses YouTube search results """
 
-    def __init__(self):
+    def __init__(self, t):
         super().__init__()
         self.data = ""
+        self.target = t
+        self.iterations = 0
 
     def handle_starttag(self, tag, attrs):
         """ return the first video link """
-        if self.data != "":
+        if self.data != "" and self.iterations > self.target:
             return
         # try the first a tag with a title and a link to /watch?=...
         if tag == 'a':
             for attr_name, attr_val in attrs:
                 if attr_name == "href" and attr_val.startswith("/watch?v="):
                     self.data = attr_val[9:]
-
+                    self.iterations += 1    
 
 def search_yt(query, chan):
     """ Return the first youtube result for a link """
     print("Started")
     url = "https://www.youtube.com/results?search_query=" + quote_plus(query)
-    parser = YTParser()
-    parser.feed(str(urlopen(url).read()))
-    vid_id = parser.data
-    vid_obj = pafy.new("http://www.youtube.com/watch?v=" + vid_id).getbestaudio()
+    i = 0
+    vid_obj = None
+    duration = 0
+    while vid_obj is None:
+        parser = YTParser(i)
+        parser.feed(str(urlopen(url).read()))
+        vid_id = parser.data
+        print(vid_id)
+        vid_obj = pafy.new("http://www.youtube.com/watch?v=" + vid_id).getbestaudio()
     vid_file = vid_id+"."+vid_obj.extension
     print(vid_obj.download(quiet=True, filepath=vid_file))
-    system("xdg-open " + vid_file)
-    print("Done")
+    os.system("avplay -loglevel panic " + vid_file + " -autoexit")
+    os.remove(vid_file)
     print(chan.read())
 
-
-YT_TASK = Task("youtube", [Expression(compile(r"search for (.*) on YouTube"), ('query'))], [], search_yt)
+YT_TASK = Task("youtube", [Expression(compile(r"search for (.*) on youtube"), ('query'))], [], search_yt)
