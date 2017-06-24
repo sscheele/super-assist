@@ -60,7 +60,7 @@ def search_yt(query, chan):
         if chan.is_full():
             tmp = chan.read()
             if tmp == "pause" or tmp == "play":
-                p = subprocess.Popen(['xte'], stdin=PIPE)
+                p = subprocess.Popen(['xte'], stdin=subprocess.PIPE)
                 p.communicate(input="""p
                 """)
         sleep(.07)
