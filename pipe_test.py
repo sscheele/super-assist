@@ -1,13 +1,9 @@
-import time
-def follow(thefile):
-    thefile.seek(0,2) # Go to the end of the file
-    while True:
-        line = thefile.readline()
-        if not line:
-            time.sleep(0.1) # Sleep briefly
-            continue
-        yield line
-
-with open("test.log", 'r') as f:
-    for line in follow(f):
-        print(line)
+import paramiko
+ssh = paramiko.SSHClient()
+ssh.set_missing_host_key_policy(
+    paramiko.AutoAddPolicy())
+ssh.connect('127.0.0.1', username='pi', 
+    password='')
+stdin, stdout, stderr = ssh.exec_command("/home/pi/Desktop/GAssist/env/bin/google-assistant-demo")
+for line in stdout:
+    print(line)
