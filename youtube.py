@@ -9,6 +9,7 @@ import pafy
 import os
 import subprocess
 from time import sleep
+import threading
 from input_classes import Task, Expression
 
 
@@ -38,6 +39,11 @@ class YTParser(HTMLParser):
                     self.iterations += 1
 
 
+def playAndDelete(filename):
+    player = subprocess.Popen(["avplay", filename, "-autoexit"])
+    os.remove(vid_file)
+
+
 def search_yt(query, chan):
     """ Return the first youtube result for a link """
     print("Started")
@@ -54,17 +60,16 @@ def search_yt(query, chan):
             "http://www.youtube.com/watch?v=" + vid_id).getbestaudio()
     vid_file = vid_id + "." + vid_obj.extension
     print(vid_obj.download(quiet=True, filepath=vid_file))
-    player = subprocess.Popen(
-        ["avplay", vid_file, "-autoexit"])
-    while player.poll() is None:
-        if chan.is_full():
-            tmp = chan.read()
-            if tmp == "pause" or tmp == "play":
-                p = subprocess.Popen(['xte'], stdin=subprocess.PIPE)
-                p.stdin.write(bytes("key space\n", 'UTF-8'))
-                p.stdin.flush()
-        sleep(.07)
-    os.remove(vid_file)
+    thrd = threading.Thread(target=playAndDelete, args=(vid_file))
+    thrd.start()
+    while True:
+        tmp = chan.read()
+        if tmp == "pause" or tmp == "play":
+            p = subprocess.Popen(['xte'], stdin=subprocess.PIPE)
+            p.stdin.write(bytes("key space\n", 'UTF-8'))
+            p.stdin.flush()
+        elif tmp == "PKILL":
+            return
 
 
 YT_TASK = Task("youtube",
