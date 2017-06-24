@@ -61,11 +61,9 @@ def search_yt(query, chan):
             tmp = chan.read()
             if tmp == "pause" or tmp == "play":
                 p = subprocess.Popen(['xte'], stdin=subprocess.PIPE)
-                p.communicate(input=bytes("""p
-                """, 'UTF-8'))
+                p.communicate(input=bytes("key p\n", 'UTF-8'))
         sleep(.07)
     os.remove(vid_file)
-    print(chan.read())
 
 
 YT_TASK = Task("youtube",
