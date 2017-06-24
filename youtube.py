@@ -56,7 +56,7 @@ def search_yt(query, chan):
     print(vid_obj.download(quiet=True, filepath=vid_file))
     player = subprocess.Popen(
         ["avplay", vid_file, "-autoexit"], stdout=subprocess.PIPE)
-    while player.poll():
+    while player.poll() is None:
         if chan.is_full():
             tmp = chan.read()
             if tmp == "pause" or tmp == "play":
