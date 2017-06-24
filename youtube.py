@@ -55,13 +55,14 @@ def search_yt(query, chan):
     vid_file = vid_id + "." + vid_obj.extension
     print(vid_obj.download(quiet=True, filepath=vid_file))
     player = subprocess.Popen(
-        ["avplay", vid_file, "-autoexit"], stdout=subprocess.PIPE)
+        ["avplay", vid_file, "-autoexit"])
     while player.poll() is None:
         if chan.is_full():
             tmp = chan.read()
             if tmp == "pause" or tmp == "play":
                 p = subprocess.Popen(['xte'], stdin=subprocess.PIPE)
-                p.communicate(input=bytes("key p\n", 'UTF-8'))
+                p.stdin.write(bytes("key space\n", 'UTF-8'))
+                p.stdin.flush()
         sleep(.07)
     os.remove(vid_file)
 
