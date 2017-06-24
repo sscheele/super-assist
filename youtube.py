@@ -60,7 +60,7 @@ def search_yt(query, chan):
             "http://www.youtube.com/watch?v=" + vid_id).getbestaudio()
     vid_file = vid_id + "." + vid_obj.extension
     print(vid_obj.download(quiet=True, filepath=vid_file))
-    thrd = threading.Thread(target=playAndDelete, args=(vid_file))
+    thrd = threading.Thread(target=playAndDelete, args=(vid_file,))
     thrd.start()
     while True:
         tmp = chan.read()
