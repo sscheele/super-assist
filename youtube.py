@@ -8,7 +8,6 @@ import random
 import pafy
 import os
 from time import sleep
-from psutil import process_iter
 from input_classes import Task, Expression
 
 def rand_str(N):

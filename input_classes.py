@@ -1,6 +1,9 @@
 """ Classes to help with task managment and input handling """
 import re
+import subprocess
+import time
 from thread_classes import ThreadOverseer
+
 
 
 class Expression:
@@ -29,7 +32,8 @@ class InputHandler:
         for tsk in self.commands:
             for expr in tsk.starters:
                 if expr.pattern.match(text):
-                    self.overseer.start_process(tsk.name, tsk.thread_func, text)
+                    self.overseer.start_process(
+                        tsk.name, tsk.thread_func, text)
                     return
             if not self.overseer.is_running(tsk.name):
                 continue
@@ -44,16 +48,25 @@ class InputHandler:
     def scan_input(self):
         """ scan_input reads input from the console (really a pipe in practice),
         writes it to the console, and tries to parse it """
-        try:
-            while True:
-                tmp = input()
+        proc = subprocess.Popen(["ssh", "-tt", "pi@127.0.0.1"],
+                                stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        # give time to connect
+        time.sleep(5)
+        proc.stdin.write(
+            b"/home/pi/Desktop/GAssist/env/bin/google-assistant-demo\n")
+        proc.stdin.flush()
+        while True:
+            next_line = proc.stdout.readline()
+            if next_line != '':
+                # the real code does filtering here
+                tmp = next_line.decode("utf-8")
                 print(tmp)
                 tmp = tmp.strip().lower()
                 match_test = self.text_regex.match(tmp)
                 if match_test:
                     self.handle_input(match_test.group(1))
-        except EOFError:
-            pass
+            else:
+                time.sleep(.01)
 
 
 class Task:
