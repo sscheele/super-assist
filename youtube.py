@@ -41,7 +41,8 @@ class YTParser(HTMLParser):
 
 def playAndDelete(filename):
     player = subprocess.Popen(["avplay", filename, "-autoexit"])
-    os.remove(vid_file)
+    player.wait()
+    os.remove(filename)
 
 
 def search_yt(query, chan):
