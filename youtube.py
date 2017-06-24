@@ -7,12 +7,15 @@ import string
 import random
 import pafy
 import os
+import subprocess
 from time import sleep
 from input_classes import Task, Expression
+
 
 def rand_str(N):
     """ return a random string of length N """
     return ''.join([random.choice(string.ascii_uppercase + string.digits) for i in range(N)])
+
 
 class YTParser(HTMLParser):
     """ YTParser parses YouTube search results """
@@ -32,7 +35,8 @@ class YTParser(HTMLParser):
             for attr_name, attr_val in attrs:
                 if attr_name == "href" and attr_val.startswith("/watch?v="):
                     self.data = attr_val[9:]
-                    self.iterations += 1    
+                    self.iterations += 1
+
 
 def search_yt(query, chan):
     """ Return the first youtube result for a link """
@@ -46,11 +50,26 @@ def search_yt(query, chan):
         parser.feed(str(urlopen(url).read()))
         vid_id = parser.data
         print(vid_id)
-        vid_obj = pafy.new("http://www.youtube.com/watch?v=" + vid_id).getbestaudio()
-    vid_file = vid_id+"."+vid_obj.extension
+        vid_obj = pafy.new(
+            "http://www.youtube.com/watch?v=" + vid_id).getbestaudio()
+    vid_file = vid_id + "." + vid_obj.extension
     print(vid_obj.download(quiet=True, filepath=vid_file))
-    os.system("avplay -loglevel panic " + vid_file + " -autoexit")
+    player = subprocess.Popen(
+        ["avplay", "-loglevel quiet", "-nodisp", vid_file, "-autoexit"], stdin=subprocess.PIPE)
+    while player.poll():
+        if chan.is_full():
+            tmp = chan.read()
+            if tmp == "pause" or tmp == "play":
+                player.stdin.write(" ")
+                player.stdin.flush()
+        sleep(.07)
     os.remove(vid_file)
     print(chan.read())
 
-YT_TASK = Task("youtube", [Expression(compile(r"search for (.*) on youtube"), ('query'))], [], search_yt)
+
+YT_TASK = Task("youtube",
+               [Expression(compile(r"search for (.*) on youtube"), ('query'))],
+               [Expression(compile("pause"), ("command")),
+                Expression(compile("play"), ("command"))
+                ],
+               search_yt)

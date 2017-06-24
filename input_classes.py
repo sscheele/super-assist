@@ -5,7 +5,6 @@ import time
 from thread_classes import ThreadOverseer
 
 
-
 class Expression:
     """ Expression represents a way of phrasing a command - it contains a regex and a
     parallel set of argument names which correspond to capturing groups within the regex"""
@@ -21,7 +20,8 @@ class InputHandler:
     def __init__(self):
         self.commands = []
         self.overseer = ThreadOverseer()
-        self.text_regex = re.compile(r"\{'text': '(.*)'\}")
+        self.text_regexes = [re.compile(
+            r"\{'text': '(.*)'\}"), re.compile("\\{'text': \"(.*)\"\\}")]
 
     def add_class(self, cls):
         """add_class matches a set of patterns to a Task"""
@@ -62,9 +62,10 @@ class InputHandler:
                 tmp = next_line.decode("utf-8")
                 print(tmp)
                 tmp = tmp.strip().lower()
-                match_test = self.text_regex.match(tmp)
-                if match_test:
-                    self.handle_input(match_test.group(1))
+                for test_re in self.text_regexes:
+                    match_test = test_re.match(tmp)
+                    if match_test:
+                        self.handle_input(match_test.group(1))
             else:
                 time.sleep(.01)
 
