@@ -13,11 +13,6 @@ import threading
 from input_classes import Task, Expression
 
 
-def rand_str(N):
-    """ return a random string of length N """
-    return ''.join([random.choice(string.ascii_uppercase + string.digits) for i in range(N)])
-
-
 class YTParser(HTMLParser):
     """ YTParser parses YouTube search results """
 
@@ -77,8 +72,11 @@ def search_yt(query, chan):
 
 
 YT_TASK = Task("youtube",
-               [Expression(compile(r"search for (.*) on youtube"), ('query'))],
-               [Expression(compile("pause"), ("command")),
-                Expression(compile("play"), ("command"))
+               [Expression(compile(r"search for (.+) on youtube"), ('query',)),
+                Expression(compile(r"search youtube for (.+)"), ('query',)),
+                Expression(compile(r"play (.+)"), ('query',)),
+                ],
+               [Expression(compile("pause"), ("command",)),
+                Expression(compile("play"), ("command",))
                 ],
                search_yt)
