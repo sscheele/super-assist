@@ -9,6 +9,9 @@ def gen_dict(keys, vals):
     """ generate a dictionary from tuples of keys and vals """
     retVal = {}
     for i in range(len(keys)):
+        if i > len(vals):
+            retVal[keys[i]] = ""
+            continue
         retVal[keys[i]] = vals[i]
     return retVal
 
