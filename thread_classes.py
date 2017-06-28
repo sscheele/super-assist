@@ -6,7 +6,7 @@ class Channel:
     """ Channel allows communication/synchronization between threads"""
 
     def __init__(self):
-        self.message = ""
+        self.message = {}
         self.write_mutex = Lock()
         self.read_mutex = Lock()
         self.read_mutex.acquire()
@@ -21,7 +21,7 @@ class Channel:
         """ read allows a message to be read from the channel """
         self.read_mutex.acquire()
         msg = self.message
-        self.message = ""
+        self.message = {}
         self.write_mutex.release()
         return msg
 
@@ -56,8 +56,8 @@ class ThreadOverseer:
         self.processes = {a: b for a,
                           b in self.processes.items() if b.thread.is_alive()}
 
-    def send_text(self, t_name, text):
-        """send_text sends text to a program"""
+    def send_args(self, t_name, text):
+        """send_args sends text to a program"""
         self.processes[t_name].chan.write(text)
 
     def is_running(self, t_name):

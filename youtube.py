@@ -43,10 +43,10 @@ def playAndDelete(filename):
         os.remove(filename)
 
 
-def search_yt(query, chan):
+def search_yt(args, chan):
     """ Return the first youtube result for a link """
-    print("Started")
-    url = "https://www.youtube.com/results?search_query=" + quote_plus(query)
+    print("Started", args['query'])
+    url = "https://www.youtube.com/results?search_query=" + quote_plus(args['query'])
     i = 0
     vid_obj = None
     duration = 0
@@ -62,7 +62,7 @@ def search_yt(query, chan):
     thrd = threading.Thread(target=playAndDelete, args=(vid_file,))
     thrd.start()
     while True:
-        tmp = chan.read()
+        tmp = chan.read()["command"]
         if tmp == "pause" or tmp == "play":
             p = subprocess.Popen(['xte'], stdin=subprocess.PIPE)
             p.stdin.write(bytes("key space\n", 'UTF-8'))

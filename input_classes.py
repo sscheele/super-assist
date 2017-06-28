@@ -5,6 +5,14 @@ import time
 from thread_classes import ThreadOverseer
 
 
+def gen_dict(keys, vals):
+    """ generate a dictionary from tuples of keys and vals """
+    retVal = {}
+    for i in range(len(keys)):
+        retVal[keys[i]] = vals[i]
+    return retVal
+
+
 class Expression:
     """ Expression represents a way of phrasing a command - it contains a regex and a
     parallel set of argument names which correspond to capturing groups within the regex"""
@@ -31,18 +39,21 @@ class InputHandler:
         """handle_input runs through the list of patterns trying to find a match for text"""
         for tsk in self.commands:
             for expr in tsk.starters:
-                if expr.pattern.match(text):
+                match_test = expr.pattern.match(text)
+                if match_test:
                     self.overseer.start_process(
-                        tsk.name, tsk.thread_func, text)
+                        tsk.name, tsk.thread_func, gen_dict(expr.arg_names, match_test.groups()))
                     return
             if not self.overseer.is_running(tsk.name):
                 continue
             for expr in tsk.command_patterns:
-                if expr.pattern.match(text):
+                match_test = expr.pattern.match(text)
+                if match_test:
                     if self.overseer.is_blocked(tsk.name):
                         print("Error: blocked channel")
                     else:
-                        self.overseer.send_text(tsk.name, text)
+                        self.overseer.send_args(tsk.name, gen_dict(
+                            expr.arg_names, match_test.groups()))
                     return
 
     def scan_input(self):
