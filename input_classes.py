@@ -44,8 +44,14 @@ class InputHandler:
             for expr in tsk.starters:
                 match_test = expr.pattern.match(text)
                 if match_test:
+                    arg_dict = {}
+                    if len(match_test.groups()) == 0:  # informationless command
+                        arg_dict = {expr.arg_names[0]: text}
+                    else:
+                        arg_dict = gen_dict(
+                            expr.arg_names, match_test.groups())
                     self.overseer.start_process(
-                        tsk.name, tsk.thread_func, gen_dict(expr.arg_names, match_test.groups()))
+                        tsk.name, tsk.thread_func, arg_dict)
                     return
             if not self.overseer.is_running(tsk.name):
                 continue
@@ -54,9 +60,14 @@ class InputHandler:
                 if match_test:
                     if self.overseer.is_blocked(tsk.name):
                         print("Error: blocked channel")
+                        return
+                    arg_dict = {}
+                    if len(match_test.groups()) == 0:  # informationless command
+                        arg_dict = {expr.arg_names[0]: text}
                     else:
-                        self.overseer.send_args(tsk.name, gen_dict(
-                            expr.arg_names, match_test.groups()))
+                        arg_dict = gen_dict(
+                            expr.arg_names, match_test.groups())
+                    self.overseer.send_args(tsk.name, arg_dict)
                     return
 
     def scan_input(self):
