@@ -40,6 +40,7 @@ class InputHandler:
 
     def handle_input(self, text):
         """handle_input runs through the list of patterns trying to find a match for text"""
+        self.overseer.prune()
         for tsk in self.commands:
             for expr in tsk.starters:
                 match_test = expr.pattern.match(text)

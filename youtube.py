@@ -10,6 +10,7 @@ import os
 import subprocess
 from time import sleep
 import threading
+from signal import SIGTERM
 from input_classes import Task, Expression
 
 
@@ -34,13 +35,10 @@ class YTParser(HTMLParser):
                     self.iterations += 1
 
 
-def playAndDelete(filename):
+def playAndDelete(player, filename):
     """ play a file, then delete it """
-    with open(os.devnull, 'wb') as throw_away:
-        player = subprocess.Popen(
-            ["avplay", filename, "-autoexit"], stdout=throw_away, stderr=throw_away)
-        player.wait()
-        os.remove(filename)
+    player.wait()
+    os.remove(filename)
 
 
 def search_yt(args, chan):
@@ -59,8 +57,11 @@ def search_yt(args, chan):
             "http://www.youtube.com/watch?v=" + vid_id).getbestaudio()
     vid_file = vid_id + "." + vid_obj.extension
     print(vid_obj.download(quiet=True, filepath=vid_file))
-    thrd = threading.Thread(target=playAndDelete, args=(vid_file,))
-    thrd.start()
+    with open(os.devnull, 'wb') as throw_away:
+        player = subprocess.Popen(
+            ["avplay", vid_file, "-autoexit"], stdout=throw_away, stderr=throw_away, preexec_fn=os.setsid)
+        thrd = threading.Thread(target=playAndDelete, args=(player, vid_file))
+        thrd.start()
     while True:
         tmp = chan.read()["command"]
         if tmp == "pause" or tmp == "play":
@@ -68,13 +69,14 @@ def search_yt(args, chan):
             p.stdin.write(bytes("key space\n", 'UTF-8'))
             p.stdin.flush()
         elif tmp == "PKILL":
+            os.killpg(os.getpgid(player.pid), SIGTERM) # this should also trigger a cleanup from playAndDelete
             return
 
 
 YT_TASK = Task("youtube",
                [Expression(compile(r"search for (.+) on youtube"), ('query',)),
                 Expression(compile(r"search youtube for (.+)"), ('query',)),
-                Expression(compile(r"play (.+)"), ('query',)),
+                Expression(compile(r"play (.+) on youtube"), ('query',)),
                 ],
                [Expression(compile("pause"), ("command",)),
                 Expression(compile("play"), ("command",))
