@@ -53,7 +53,7 @@ def pandorify(args, chan):
         if tmp == "PKILL":
             return
 
-YT_TASK = Task("youtube",
+PANDORA_TASK = Task("youtube",
                [Expression(compile(r"play (.+) radio on pandora"), ('station',)),
                 Expression(compile(r"play (.+) on pandora"), ('station',)),
                 ],
