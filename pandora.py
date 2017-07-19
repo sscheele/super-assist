@@ -15,7 +15,7 @@ def getPlayList():
     pandora = subprocess.Popen(
         ["pianobar"], stdout=subprocess.PIPE,  shell=True, preexec_fn=os.setsid)
     while True:
-        line = pandora.stdout.readline()
+        line = pandora.stdout.readline().decode('utf-8')
         if titleRe.match(line):
             yield line.strip()
         elif line.startswith("[?]"):
@@ -26,12 +26,17 @@ def pandorify(args, chan):
     """ Return the first youtube result for a link """
     print("Started", args['station'])
     num_extractor = compile(r"(\d+)\).+")
-    track_num = -1
+    track_num = ""
     for title in getPlayList():
         if args['station'] in title:
             track_num = num_extractor.match(title).group(1)
-    pandora = subprocess.Popen(
-        ["pianobar"], stdout=subprocess.PIPE,  shell=True, preexec_fn=os.setsid)
+    if track_num == "":
+        print("Bad search pattern")
+        return
+    with open(os.devnull, 'wb') as throw_away:
+        pandora = subprocess.Popen(
+            ["pianobar"], stdin=subprocess.PIPE,  shell=True, preexec_fn=os.setsid, stdout=throw_away)
+    pandora.stdin.write(bytes(track_num+"\n", "UTF-8"))
     command_dict = {
         "pause": "p",
         "play": "p",
