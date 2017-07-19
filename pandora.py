@@ -24,7 +24,7 @@ def getPlayList():
 
 def pandorify(args, chan):
     """ Return the first youtube result for a link """
-    print("Started", args['query'])
+    print("Started", args['station'])
     num_extractor = compile(r"(\d+)\).+")
     track_num = -1
     for title in getPlayList():
