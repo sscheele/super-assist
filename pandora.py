@@ -10,7 +10,7 @@ from signal import SIGTERM
 from input_classes import Task, Expression
 
 def getStation(title):
-    titleRe = compile(r"\s+(\d+)\)\s+.+")
+    titleRe = compile(r"(\d+)\).+")
     pandora = subprocess.Popen(
         ["pianobar"], stdout=subprocess.PIPE,  shell=True, preexec_fn=os.setsid)
     while True:
