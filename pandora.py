@@ -9,6 +9,7 @@ import threading
 from signal import SIGTERM
 from input_classes import Task, Expression
 
+
 def getStation(title):
     titleRe = compile(r"(\d+)\).+")
     pandora = subprocess.Popen(
@@ -23,6 +24,7 @@ def getStation(title):
             os.killpg(os.getpgid(pandora.pid), SIGTERM)
     return ""
 
+
 def pandorify(args, chan):
     """ Return the first youtube result for a link """
     print("Started", args['station'])
@@ -31,28 +33,29 @@ def pandorify(args, chan):
     if track_num == "":
         print("Bad search pattern")
         return
-    pandora = subprocess.Popen(["pianobar"], stdin=subprocess.PIPE)
-    pandora.stdin.write(bytes(track_num+"\n", "UTF-8"))
-    command_dict = {
-        "pause": "p",
-        "play": "p",
-        "like": "+",
-        "thumbs up": "+",
-        "unlike": "-",
-        "thumbs down": "-",
-        "next": "n",
-        "PKILL": "q"
-    }
-    while True:
-        tmp = chan.read()["command"]
-        key = command_dict[tmp]
-        p = subprocess.Popen(['xte'], stdin=subprocess.PIPE,
-                             shell=True, preexec_fn=os.setsid)
-        p.stdin.write(bytes("key " + key + "\n", 'UTF-8'))
-        p.stdin.flush()
-        os.killpg(os.getpgid(p.pid), SIGTERM)
-        if tmp == "PKILL":
-            return
+    with open(os.devnull, 'wb') as throw_away:
+        pandora = subprocess.Popen(
+            ["pianobar"], stdin=subprocess.PIPE, stdout=throw_away)
+        pandora.stdin.write(bytes(track_num + "\n", "UTF-8"))
+        pandora.stdin.flush()
+        command_dict = {
+            "pause": "p",
+            "play": "p",
+            "like": "+",
+            "thumbs up": "+",
+            "unlike": "-",
+            "thumbs down": "-",
+            "next": "n",
+            "PKILL": "q"
+        }
+        while True:
+            tmp = chan.read()["command"]
+            key = command_dict[tmp]
+            pandora.stdin.write(bytes("key " + key + "\n", 'UTF-8'))
+            pandora.stdin.flush()
+            if tmp == "PKILL":
+                return
+
 
 PANDORA_TASK = Task("youtube",
                     [Expression(compile(r"play (.+) radio on pandora"), ('station',)),
