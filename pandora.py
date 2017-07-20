@@ -15,8 +15,8 @@ def getStation(title):
         ["pianobar"], stdout=subprocess.PIPE,  shell=True, preexec_fn=os.setsid)
     while True:
         # remove ANSI sequence before and newline after
-        line = pandora.stdout.readline().decode('utf-8')[6:-1]
-        m = titleRe.match(line)
+        line = pandora.stdout.readline().decode('utf-8')
+        m = titleRe.match(line[6:-1])
         if title.lower() in line.lower() and m:
             return m.group(1)
         if line.startswith("[?]"):
