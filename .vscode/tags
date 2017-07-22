@@ -7,6 +7,7 @@
 Channel	../thread_classes.py	/^class Channel:$/;"	kind:class	line:5
 Expression	../input_classes.py	/^class Expression:$/;"	kind:class	line:19
 Expression	../pandora.py	/^from input_classes import Task, Expression$/;"	kind:namespace	line:10
+Expression	../pandora_test.py	/^from input_classes import Task, Expression$/;"	kind:namespace	line:10
 Expression	../volume.py	/^from input_classes import Task, Expression$/;"	kind:namespace	line:2
 Expression	../youtube.py	/^from input_classes import Task, Expression$/;"	kind:namespace	line:14
 HTMLParser	../youtube.py	/^from html.parser import HTMLParser$/;"	kind:namespace	line:2
@@ -14,11 +15,13 @@ InputHandler	../input_classes.py	/^class InputHandler:$/;"	kind:class	line:28
 InputHandler	../main.py	/^from input_classes import InputHandler$/;"	kind:namespace	line:2
 Lock	../thread_classes.py	/^from threading import Thread, Lock$/;"	kind:namespace	line:2
 PANDORA_TASK	../main.py	/^from pandora import PANDORA_TASK$/;"	kind:namespace	line:5
-PANDORA_TASK	../pandora.py	/^PANDORA_TASK = Task("youtube",$/;"	kind:variable	line:61
+PANDORA_TASK	../pandora.py	/^PANDORA_TASK = Task("youtube",$/;"	kind:variable	line:60
 SIGTERM	../pandora.py	/^from signal import SIGTERM$/;"	kind:namespace	line:9
+SIGTERM	../pandora_test.py	/^from signal import SIGTERM$/;"	kind:namespace	line:9
 SIGTERM	../youtube.py	/^from signal import SIGTERM$/;"	kind:namespace	line:13
 Task	../input_classes.py	/^class Task:$/;"	kind:class	line:99
 Task	../pandora.py	/^from input_classes import Task, Expression$/;"	kind:namespace	line:10
+Task	../pandora_test.py	/^from input_classes import Task, Expression$/;"	kind:namespace	line:10
 Task	../volume.py	/^from input_classes import Task, Expression$/;"	kind:namespace	line:2
 Task	../youtube.py	/^from input_classes import Task, Expression$/;"	kind:namespace	line:14
 Thread	../thread_classes.py	/^from threading import Thread, Lock$/;"	kind:namespace	line:2
@@ -29,7 +32,7 @@ VOL_TASK	../main.py	/^from volume import VOL_TASK$/;"	kind:namespace	line:4
 VOL_TASK	../volume.py	/^VOL_TASK = Task("vol",$/;"	kind:variable	line:11
 YTParser	../youtube.py	/^class YTParser(HTMLParser):$/;"	kind:class	line:17
 YT_TASK	../main.py	/^from youtube import YT_TASK$/;"	kind:namespace	line:3
-YT_TASK	../youtube.py	/^YT_TASK = Task("youtube",$/;"	kind:variable	line:76
+YT_TASK	../youtube.py	/^YT_TASK = Task("youtube",$/;"	kind:variable	line:77
 __init__	../input_classes.py	/^    def __init__(self):$/;"	kind:member	line:31
 __init__	../input_classes.py	/^    def __init__(self, n, s, c, t):$/;"	kind:member	line:103
 __init__	../input_classes.py	/^    def __init__(self, pat, args):$/;"	kind:member	line:23
@@ -39,10 +42,12 @@ __init__	../thread_classes.py	/^    def __init__(self, t, c):$/;"	kind:member	li
 __init__	../youtube.py	/^    def __init__(self, t):$/;"	kind:member	line:20
 add_class	../input_classes.py	/^    def add_class(self, cls):$/;"	kind:member	line:37
 compile	../pandora.py	/^from re import compile$/;"	kind:namespace	line:2
+compile	../pandora_test.py	/^from re import compile$/;"	kind:namespace	line:2
 compile	../volume.py	/^from re import compile$/;"	kind:namespace	line:3
 compile	../youtube.py	/^from re import compile$/;"	kind:namespace	line:5
 gen_dict	../input_classes.py	/^def gen_dict(keys, vals):$/;"	kind:function	line:8
-getPlayList	../pandora.py	/^def getPlayList():$/;"	kind:function	line:13
+getStation	../pandora.py	/^def getStation(title):$/;"	kind:function	line:13
+getStation	../pandora_test.py	/^def getStation(title):$/;"	kind:function	line:25
 handle_input	../input_classes.py	/^    def handle_input(self, text):$/;"	kind:member	line:41
 handle_starttag	../youtube.py	/^    def handle_starttag(self, tag, attrs):$/;"	kind:member	line:26
 handler	../main.py	/^handler = InputHandler()$/;"	kind:variable	line:7
@@ -54,35 +59,44 @@ kill_process	../thread_classes.py	/^    def kill_process(self, t_name):$/;"	kind
 main.py	../main.py	1;"	kind:file	line:1
 next_line	../pipe_test.py	/^    next_line = proc.stdout.readline()$/;"	kind:variable	line:9
 os	../pandora.py	/^import os$/;"	kind:namespace	line:5
+os	../pandora_test.py	/^import os$/;"	kind:namespace	line:5
 os	../youtube.py	/^import os$/;"	kind:namespace	line:9
 pafy	../youtube.py	/^import pafy$/;"	kind:namespace	line:8
 pandora.py	../pandora.py	1;"	kind:file	line:1
-pandorify	../pandora.py	/^def pandorify(args, chan):$/;"	kind:function	line:25
+pandora_test.py	../pandora_test.py	1;"	kind:file	line:1
+pandorify	../pandora.py	/^def pandorify(args, chan):$/;"	kind:function	line:28
+pandorify	../pandora_test.py	/^def pandorify(args, chan):$/;"	kind:function	line:39
 pipe_test.py	../pipe_test.py	1;"	kind:file	line:1
-playAndDelete	../youtube.py	/^def playAndDelete(player, filename):$/;"	kind:function	line:38
+playAndDelete	../youtube.py	/^def playAndDelete(player, filename, chan):$/;"	kind:function	line:38
 proc	../pipe_test.py	/^proc = subprocess.Popen(["ssh", "-tt", "pi@127.0.0.1"],$/;"	kind:variable	line:3
 prune	../thread_classes.py	/^    def prune(self):$/;"	kind:member	line:54
 quote_plus	../youtube.py	/^from urllib.parse import quote_plus$/;"	kind:namespace	line:3
 random	../pandora.py	/^import random$/;"	kind:namespace	line:4
+random	../pandora_test.py	/^import random$/;"	kind:namespace	line:4
 random	../youtube.py	/^import random$/;"	kind:namespace	line:7
 re	../input_classes.py	/^import re$/;"	kind:namespace	line:2
 read	../thread_classes.py	/^    def read(self):$/;"	kind:member	line:20
 scan_input	../input_classes.py	/^    def scan_input(self):$/;"	kind:member	line:74
-search_yt	../youtube.py	/^def search_yt(args, chan):$/;"	kind:function	line:44
+search_yt	../youtube.py	/^def search_yt(args, chan):$/;"	kind:function	line:45
 send_args	../thread_classes.py	/^    def send_args(self, t_name, text):$/;"	kind:member	line:59
 set_volume	../volume.py	/^def set_volume(args, chan):$/;"	kind:function	line:6
 sleep	../pandora.py	/^from time import sleep$/;"	kind:namespace	line:7
+sleep	../pandora_test.py	/^from time import sleep$/;"	kind:namespace	line:7
 sleep	../youtube.py	/^from time import sleep$/;"	kind:namespace	line:11
 start_process	../thread_classes.py	/^    def start_process(self, t_name, t_func, cmd):$/;"	kind:member	line:44
 string	../pandora.py	/^import string$/;"	kind:namespace	line:3
+string	../pandora_test.py	/^import string$/;"	kind:namespace	line:3
 string	../youtube.py	/^import string$/;"	kind:namespace	line:6
 subprocess	../input_classes.py	/^import subprocess$/;"	kind:namespace	line:3
 subprocess	../pandora.py	/^import subprocess$/;"	kind:namespace	line:6
+subprocess	../pandora_test.py	/^import subprocess$/;"	kind:namespace	line:6
 subprocess	../pipe_test.py	/^import subprocess$/;"	kind:namespace	line:1
 subprocess	../volume.py	/^import subprocess$/;"	kind:namespace	line:1
 subprocess	../youtube.py	/^import subprocess$/;"	kind:namespace	line:10
+test	../pandora_test.py	/^def test():$/;"	kind:function	line:12
 thread_classes.py	../thread_classes.py	1;"	kind:file	line:1
 threading	../pandora.py	/^import threading$/;"	kind:namespace	line:8
+threading	../pandora_test.py	/^import threading$/;"	kind:namespace	line:8
 threading	../youtube.py	/^import threading$/;"	kind:namespace	line:12
 time	../input_classes.py	/^import time$/;"	kind:namespace	line:4
 time	../pipe_test.py	/^import time$/;"	kind:namespace	line:2

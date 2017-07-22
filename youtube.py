@@ -35,10 +35,11 @@ class YTParser(HTMLParser):
                     self.iterations += 1
 
 
-def playAndDelete(player, filename):
+def playAndDelete(player, filename, chan):
     """ play a file, then delete it """
     player.wait()
     os.remove(filename)
+    chan.write("PKILL")
 
 
 def search_yt(args, chan):
@@ -60,7 +61,7 @@ def search_yt(args, chan):
     with open(os.devnull, 'wb') as throw_away:
         player = subprocess.Popen(
             ["avplay", vid_file, "-autoexit"], stdout=throw_away, stderr=throw_away, preexec_fn=os.setsid)
-        thrd = threading.Thread(target=playAndDelete, args=(player, vid_file))
+        thrd = threading.Thread(target=playAndDelete, args=(player, vid_file, chan))
         thrd.start()
     while True:
         tmp = chan.read()["command"]

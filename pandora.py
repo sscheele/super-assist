@@ -57,7 +57,7 @@ def pandorify(args, chan):
                 return
 
 
-PANDORA_TASK = Task("youtube",
+PANDORA_TASK = Task("pandora",
                     [Expression(compile(r"play (.+) radio on pandora"), ('station',)),
                      Expression(compile(r"play (.+) on pandora"),
                                 ('station',)),
