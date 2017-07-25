@@ -51,7 +51,7 @@ def pandorify(args, chan):
         while True:
             tmp = chan.read()["command"]
             key = command_dict[tmp]
-            pandora.stdin.write(bytes("key " + key + "\n", 'UTF-8'))
+            pandora.stdin.write(bytes(key, 'UTF-8'))
             pandora.stdin.flush()
             if tmp == "PKILL":
                 return
