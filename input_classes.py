@@ -58,6 +58,7 @@ class InputHandler:
             for expr in tsk.command_patterns:
                 match_test = expr.pattern.match(text)
                 if match_test:
+                    print("Attempting to send command '", text, "' to", tsk.name)
                     if self.overseer.is_blocked(tsk.name):
                         print("Error: blocked channel")
                         return
