@@ -75,11 +75,11 @@ def search_yt(args, chan):
 
 
 YT_TASK = Task("youtube",
-               [Expression(compile(r"search for (.+) on youtube"), ('query',)),
-                Expression(compile(r"search youtube for (.+)"), ('query',)),
-                Expression(compile(r"play (.+) on youtube"), ('query',)),
+               [Expression(compile(r"^search for (.+) on youtube$"), ('query',)),
+                Expression(compile(r"^search youtube for (.+)"), ('query',)),
+                Expression(compile(r"^play (.+) on youtube$"), ('query',)),
                 ],
-               [Expression(compile("pause"), ("command",)),
-                Expression(compile("play"), ("command",))
+               [Expression(compile("^pause$"), ("command",)),
+                Expression(compile("^play$"), ("command",))
                 ],
                search_yt)

@@ -9,7 +9,7 @@ def set_volume(args, chan):
     subprocess.call(to_call)
 
 VOL_TASK = Task("vol",
-                [Expression(compile(r"set volume to (\d+)%?"), ("vol",)),
-                 Expression(compile(r"volume (\d+)%?"), ("vol",)),
-                 Expression(compile(r"set volume (\d+)%?"), ("vol",))
+                [Expression(compile(r"^set volume to (\d+)%?$"), ("vol",)),
+                 Expression(compile(r"^volume (\d+)%?$"), ("vol",)),
+                 Expression(compile(r"^set volume (\d+)%?$"), ("vol",))
                  ], [], set_volume)

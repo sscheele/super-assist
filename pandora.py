@@ -58,16 +58,16 @@ def pandorify(args, chan):
 
 
 PANDORA_TASK = Task("pandora",
-                    [Expression(compile(r"play (.+) radio on pandora"), ('station',)),
-                     Expression(compile(r"play (.+) on pandora"),
+                    [Expression(compile(r"^play (.+) radio on pandora$"), ('station',)),
+                     Expression(compile(r"^play (.+) on pandora$"),
                                 ('station',)),
                      ],
-                    [Expression(compile("pause"), ("command",)),
-                        Expression(compile("play"), ("command",)),
-                        Expression(compile("like"), ("command",)),
-                        Expression(compile("thumbs up"), ("command",)),
-                        Expression(compile("unlike"), ("command",)),
-                        Expression(compile("thumbs down"), ("command",)),
-                        Expression(compile("next"), ("command",))
+                    [Expression(compile("^pause$"), ("command",)),
+                        Expression(compile("^play$"), ("command",)),
+                        Expression(compile("^like$"), ("command",)),
+                        Expression(compile("^thumbs up$"), ("command",)),
+                        Expression(compile("^unlike$"), ("command",)),
+                        Expression(compile("^thumbs down$"), ("command",)),
+                        Expression(compile("^next$"), ("command",))
                      ],
                     pandorify)
