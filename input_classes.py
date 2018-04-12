@@ -91,7 +91,7 @@ class InputHandler:
                 for test_re in self.text_regexes:
                     match_test = test_re.match(tmp)
                     if match_test:
-                        self.handle_input(match_test.group(1))
+                        self.handle_input(match_test.group(1).strip())
             else:
                 time.sleep(.01)
 
